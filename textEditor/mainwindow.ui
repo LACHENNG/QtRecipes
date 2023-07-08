@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>656</width>
+    <height>291</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>文件编辑器</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QMdiArea" name="mdiArea"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>656</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="defaultUp">
+    <bool>true</bool>
+   </property>
+   <widget class="QMenu" name="menuF">
+    <property name="title">
+     <string>文件(&amp;F)</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuE">
+    <property name="title">
+     <string>编辑(&amp;E)</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="actionCut"/>
+    <addaction name="actionCopy"/>
+    <addaction name="actionPaste"/>
+   </widget>
+   <widget class="QMenu" name="menuW">
+    <property name="title">
+     <string>窗口(&amp;W)</string>
+    </property>
+    <addaction name="actionClose"/>
+    <addaction name="actionCloseAll"/>
+    <addaction name="separator"/>
+    <addaction name="actionTile"/>
+    <addaction name="actionCascade"/>
+    <addaction name="separator"/>
+    <addaction name="actionNext"/>
+    <addaction name="actionPrevious"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuH">
+    <property name="title">
+     <string>帮助(&amp;N)</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionAboutQt"/>
+   </widget>
+   <addaction name="menuF"/>
+   <addaction name="menuE"/>
+   <addaction name="menuW"/>
+   <addaction name="menuH"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="cursor">
+    <cursorShape>ArrowCursor</cursorShape>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+  </widget>
+  <action name="actionNew">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/new.png</normaloff>:/myImages/images/new.png</iconset>
+   </property>
+   <property name="text">
+    <string>新建文件</string>
+   </property>
+   <property name="toolTip">
+    <string>新建文件</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/open.png</normaloff>:/myImages/images/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>打开文件</string>
+   </property>
+   <property name="toolTip">
+    <string>打开文件</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/save.png</normaloff>:/myImages/images/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>保存(&amp;S)</string>
+   </property>
+   <property name="toolTip">
+    <string>保存</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSaveAs">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/saveAs.png</normaloff>:/myImages/images/saveAs.png</iconset>
+   </property>
+   <property name="text">
+    <string>另存为(&amp;A)</string>
+   </property>
+   <property name="toolTip">
+    <string>另存为</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/exit.png</normaloff>:/myImages/images/exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>退出(&amp;X)</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/undo.png</normaloff>:/myImages/images/undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>撤销(&amp;U)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/redo.png</normaloff>:/myImages/images/redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>恢复(&amp;R)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/cut.png</normaloff>:/myImages/images/cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>剪切(&amp;T)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/copy.png</normaloff>:/myImages/images/copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>复制(&amp;C)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/paste.png</normaloff>:/myImages/images/paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>粘贴(&amp;P)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>关闭(&amp;O)</string>
+   </property>
+  </action>
+  <action name="actionCloseAll">
+   <property name="text">
+    <string>关闭所有窗口(&amp;A)</string>
+   </property>
+   <property name="toolTip">
+    <string>关闭所有窗口</string>
+   </property>
+  </action>
+  <action name="actionTile">
+   <property name="text">
+    <string>平铺(&amp;T)</string>
+   </property>
+   <property name="toolTip">
+    <string>平铺</string>
+   </property>
+  </action>
+  <action name="actionCascade">
+   <property name="text">
+    <string>层叠(&amp;C)</string>
+   </property>
+   <property name="toolTip">
+    <string>层叠</string>
+   </property>
+  </action>
+  <action name="actionNext">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/next.png</normaloff>:/myImages/images/next.png</iconset>
+   </property>
+   <property name="text">
+    <string>下一个(&amp;X)</string>
+   </property>
+   <property name="toolTip">
+    <string>下一个</string>
+   </property>
+  </action>
+  <action name="actionPrevious">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/previous.png</normaloff>:/myImages/images/previous.png</iconset>
+   </property>
+   <property name="text">
+    <string>前一个(&amp;V)</string>
+   </property>
+   <property name="toolTip">
+    <string>前一个</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="myResources.qrc">
+     <normaloff>:/myImages/images/about.png</normaloff>:/myImages/images/about.png</iconset>
+   </property>
+   <property name="text">
+    <string>关于(&amp;A)</string>
+   </property>
+   <property name="toolTip">
+    <string>关于</string>
+   </property>
+  </action>
+  <action name="actionAboutQt">
+   <property name="text">
+    <string>关于Qt(&amp;Q)</string>
+   </property>
+   <property name="toolTip">
+    <string>关于Qt</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="myResources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
