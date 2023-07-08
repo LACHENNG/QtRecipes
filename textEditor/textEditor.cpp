@@ -22,25 +22,28 @@ void TextEditor::newFile()
 
     isUntitled = true;
 
-    currentFileName_ = tr("Untitled %1").arg(seqenceNumber++);
+    setCurrentFile(tr("./Untitled %1.txt").arg(seqenceNumber++));
 
-    setWindowTitle(currentFileName_ + "[*]");
+    setWindowTitle(currentFileName() + "[*]");
 
 }
-bool TextEditor::loadFile(const QString& filename)
+bool TextEditor::loadFile(const QString& filepath)
 {
-    QFile file(filename);
-    // read only
+    QFile file(filepath);
+
     if(!file.open(QFile::ReadOnly | QFile::Text)){
         QMessageBox::warning(this, tr("多文档编辑器"),
                              tr("无法读取文件 %1:\n%2.").
-                             arg(filename).arg(file.errorString()));
+                             arg(filepath).arg(file.errorString()));
         return false;
     }
-    currentFileName_ = filename;
+    setCurrentFile(filepath);
+    setWindowTitle(currentFileName() + "[*]");
 
     QTextStream in(&file);
     setPlainText(in.readAll());
+    // disable '*' in window title at first load file content
+    setWindowModified(false);
 
     return true;
 }
@@ -48,7 +51,7 @@ bool TextEditor::loadFile(const QString& filename)
 bool TextEditor::save()
 {
     if(!isUntitled){
-        return saveFile(currentFileName_);
+        return saveFile(currentFilePath());
     }
 
     return saveAs();
@@ -56,26 +59,40 @@ bool TextEditor::save()
 
 bool TextEditor::saveAs()
 {
-    auto filename = QFileDialog::getSaveFileName(this, tr("另存为"), currentFileName_);
-    if(filename.isEmpty())
+    auto filepath = QFileDialog::getSaveFileName(this, tr("另存为"), currentFilePath_);
+    if(filepath.isEmpty())
         return false;
-    return saveFile(filename);
+    return saveFile(filepath);
 }
 
-bool TextEditor::saveFile(const QString& filename)
+bool TextEditor::saveFile(const QString& filepath)
 {
-    QFile file(filename);
+    QFile file(filepath);
     if(! file.open(QFile::WriteOnly | QFile::Text)){
         QMessageBox::warning(this, tr("多文档编辑器"),
                              tr("无法写入文件 %1:\n%2.")
-                             .arg(filename).arg(file.errorString()));
+                             .arg(filepath).arg(file.errorString()));
         return false;
     }
     QTextStream out(&file);
     // write in plain text
     out << toPlainText();
-    currentFileName_ = filename;
+    currentFilePath_ = filepath;
     return true;
+}
+
+void TextEditor::setCurrentFile(const QString &absFilePath)
+{
+    if(isUntitled){
+        currentFilePath_ = absFilePath;
+        return ;
+    }
+    currentFilePath_ = QFileInfo(absFilePath).canonicalFilePath();
+}
+
+QString TextEditor::currentFileName()
+{
+    return QFileInfo(currentFilePath()).fileName();
 }
 
 void TextEditor::documentWasModified()

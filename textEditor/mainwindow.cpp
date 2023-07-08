@@ -3,12 +3,13 @@
 #include "textEditor.h"
 #include "QMdiSubWindow"
 #include "QtDebug"
+#include "QFile"
+#include "QFileDialog"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::MainWindow),
-    actionSeqarator_(new QAction(this)),
-    activeTextEditor_(nullptr)
+    actionSeqarator_(new QAction(this))
 {
     ui_->setupUi(this);
 
@@ -96,3 +97,39 @@ TextEditor *MainWindow::activeTextEditor() const
     return nullptr;
 }
 
+QMdiSubWindow *MainWindow::findActiveEditorByFilePath(const QString &filepath)
+{
+    auto mdiSubWindowList = ui_->mdiArea->subWindowList();
+    for(auto subwindowp : mdiSubWindowList){
+        auto *textEditorp = qobject_cast<TextEditor*>(subwindowp->widget());
+        if(textEditorp->currentFilePath() == filepath){
+            return subwindowp;
+        }
+    }
+    return nullptr;
+}
+
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QString filepath = QFileDialog::getOpenFileName(this, "打开");
+
+    if(filepath.isEmpty()){
+        return ;
+    }
+
+    QMdiSubWindow* activeEditor = findActiveEditorByFilePath(filepath);
+
+    if(activeEditor != nullptr){
+        ui_->mdiArea->setActiveSubWindow(activeEditor);
+        return ;
+    }
+
+    TextEditor* child = createTextEditor();
+    ui_->mdiArea->addSubWindow(child);
+    child->setCurrentFile(filepath);
+    child->loadFile(filepath);
+    child->show();
+
+    return ;
+}

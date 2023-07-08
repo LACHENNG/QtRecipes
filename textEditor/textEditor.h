@@ -13,10 +13,14 @@ class TextEditor : public QTextEdit
 public:
     explicit TextEditor(QWidget* parent = nullptr);
     void newFile();
-    bool loadFile(const QString& filename);
+    bool loadFile(const QString& filepath);
     bool save();
     bool saveAs();
-    bool saveFile(const QString& filename);
+    bool saveFile(const QString& filepath);
+
+    void setCurrentFile(const QString& absFilePath);
+    QString currentFilePath() { return currentFilePath_;}
+    QString currentFileName();
 
 protected:
     void onClose(QCloseEvent* event);
@@ -25,7 +29,7 @@ private slots:
     void documentWasModified();
 
 private:
-    QString currentFileName_;
+    QString currentFilePath_;
     bool isUntitled;
 };
 
