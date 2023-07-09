@@ -77,6 +77,21 @@ bool TextEditor::saveAs()
     return saveFile(filepath);
 }
 
+void TextEditor::cutToClipBoard()
+{
+    cut();
+}
+
+void TextEditor::copySelectedToClipBoard()
+{
+    copy();
+}
+
+void TextEditor::pasteFromClipBoard()
+{
+    paste();
+}
+
 bool TextEditor::fileCommited()
 {
     return isFileCommited_;

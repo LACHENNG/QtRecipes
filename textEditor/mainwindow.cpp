@@ -169,3 +169,24 @@ void MainWindow::on_actionExit_triggered()
     }
     close();
 }
+
+void MainWindow::on_actionCut_triggered()
+{
+    TextEditor * activeEditor = activeTextEditor();
+    assert(activeEditor != nullptr);
+    activeEditor->cutToClipBoard();
+}
+
+void MainWindow::on_actionCopy_triggered()
+{
+    TextEditor * activeEditor = activeTextEditor();
+    assert(activeEditor != nullptr);
+    activeEditor->copySelectedToClipBoard();
+}
+
+void MainWindow::on_actionPaste_triggered()
+{
+    TextEditor * activeEditor = activeTextEditor();
+    assert(activeEditor != nullptr);
+    activeEditor->pasteFromClipBoard();
+}

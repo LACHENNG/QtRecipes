@@ -17,6 +17,10 @@ public:
     bool save();
     bool saveAs();
 
+    void cutToClipBoard();
+    void copySelectedToClipBoard();
+    void pasteFromClipBoard();
+
     bool fileCommited();
     void setCurrentFile(const QString& absFilePath);
     QString currentFilePath() { return currentFilePath_;}
