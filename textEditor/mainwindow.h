@@ -42,6 +42,18 @@ private slots:
 
     void on_actionCloseAll_triggered();
 
+    void on_actionTile_triggered();
+
+    void on_actionCascade_triggered();
+
+    void on_actionNext_triggered();
+
+    void on_actionPrevious_triggered();
+
+    void on_actionAbout_triggered();
+
+    void on_actionAboutQt_triggered();
+
 private:
     TextEditor* activeTextEditor() const;
     QMdiSubWindow *findActiveEditorByFilePath(const QString& filepath);

@@ -112,7 +112,11 @@ QMdiSubWindow *MainWindow::findActiveEditorByFilePath(const QString &filepath)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    event->accept();
+    ui_->mdiArea->closeAllSubWindows();
+    bool midchildAllClosed = (ui_->mdiArea->subWindowList().size() == 0);
+    if(midchildAllClosed)
+        event->accept();
+    else event->ignore();
 }
 
 
@@ -197,4 +201,34 @@ void MainWindow::on_actionClose_triggered()
 void MainWindow::on_actionCloseAll_triggered()
 {
     ui_->mdiArea->closeAllSubWindows();
+}
+
+void MainWindow::on_actionTile_triggered()
+{
+    ui_->mdiArea->tileSubWindows();
+}
+
+void MainWindow::on_actionCascade_triggered()
+{
+    ui_->mdiArea->cascadeSubWindows();
+}
+
+void MainWindow::on_actionNext_triggered()
+{
+    ui_->mdiArea->activateNextSubWindow();
+}
+
+void MainWindow::on_actionPrevious_triggered()
+{
+    ui_->mdiArea->activatePreviousSubWindow();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+
+}
+
+void MainWindow::on_actionAboutQt_triggered()
+{
+    qApp->aboutQt();
 }
