@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     actionSeqarator_(new QAction(this))
 {
     ui_->setupUi(this);
-
+//    ui_->mdiArea->setViewMode(QMdiArea::TabbedView);
     actionSeqarator_->setSeparator(false);
 
     updateMenus();
@@ -163,13 +163,7 @@ void MainWindow::on_actionSaveAs_triggered()
 
 void MainWindow::on_actionExit_triggered()
 {
-    auto childList = ui_->mdiArea->subWindowList();
-    for(auto mdiChild : childList){
-        TextEditor* activeEditor =
-                    qobject_cast<TextEditor*>(mdiChild->widget());
-        activeEditor->save();
-        activeEditor->close();
-    }
+    on_actionCloseAll_triggered();
     close();
 }
 
@@ -192,4 +186,15 @@ void MainWindow::on_actionPaste_triggered()
     TextEditor * activeEditor = activeTextEditor();
     assert(activeEditor != nullptr);
     activeEditor->pasteFromClipBoard();
+}
+
+void MainWindow::on_actionClose_triggered()
+{
+    auto *midActiveChild = ui_->mdiArea->activeSubWindow();
+    midActiveChild->close();
+}
+
+void MainWindow::on_actionCloseAll_triggered()
+{
+    ui_->mdiArea->closeAllSubWindows();
 }

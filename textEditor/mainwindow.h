@@ -38,6 +38,10 @@ private slots:
 
     void on_actionPaste_triggered();
 
+    void on_actionClose_triggered();
+
+    void on_actionCloseAll_triggered();
+
 private:
     TextEditor* activeTextEditor() const;
     QMdiSubWindow *findActiveEditorByFilePath(const QString& filepath);
