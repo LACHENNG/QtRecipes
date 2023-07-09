@@ -29,8 +29,8 @@ void TextEditor::newFile()
     static int seqenceNumber = 1;
     setCurrentFile(tr("./Untitled %1.txt").arg(seqenceNumber++));
     setWindowTitle(currentFileName() + "[*]");
-
 }
+
 bool TextEditor::loadFile(const QString& filepath)
 {
     isUntitled = false;
@@ -114,7 +114,7 @@ bool TextEditor::saveFile(const QString& filepath)
     out << toPlainText();
 
     setCurrentFile(filepath);
-    setWindowTitle(currentFileName());
+    setWindowTitle(currentFileName() + "[*]");
     setWindowModified(false);
     setfileCommited();
     return true;

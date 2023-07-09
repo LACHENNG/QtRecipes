@@ -145,8 +145,11 @@ void MainWindow::on_actionSave_triggered(){
     TextEditor * activeEditor = activeTextEditor();
     assert(activeEditor != nullptr);
 
-    activeEditor->save();
-    activeEditor->setWindowModified(false);
+    if(activeEditor->save())
+    {
+        // disable '[*]' in window title
+        activeEditor->setWindowModified(false);
+    }
 }
 
 void MainWindow::on_actionSaveAs_triggered()
