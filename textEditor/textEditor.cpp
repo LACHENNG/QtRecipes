@@ -3,32 +3,39 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QTextEncoder>
+#include <QCloseEvent>
+#include <QDebug>
 
 TextEditor::TextEditor(QWidget* parent)
-  : QTextEdit(parent)
+  : QTextEdit(parent),
+    isUntitled(true),
+    isFileCommited_(false)
 {
     // destory this class object at close
     // otherwise it is hidden by default
     setAttribute(Qt::WA_DeleteOnClose);
 
-    isUntitled = true;
-
     connect(document(), SIGNAL(contentsChanged()),
             this, SLOT(documentWasModified()));
+    connect(document(), SIGNAL(contentsChanged()),
+            this, SLOT(setfileUnCommited()));
 }
 void TextEditor::newFile()
 {
-    static int seqenceNumber = 1;
-
     isUntitled = true;
+    setfileCommited();
 
+    static int seqenceNumber = 1;
     setCurrentFile(tr("./Untitled %1.txt").arg(seqenceNumber++));
-
     setWindowTitle(currentFileName() + "[*]");
 
 }
 bool TextEditor::loadFile(const QString& filepath)
 {
+    isUntitled = false;
+    setfileCommited();
+
     QFile file(filepath);
 
     if(!file.open(QFile::ReadOnly | QFile::Text)){
@@ -41,6 +48,7 @@ bool TextEditor::loadFile(const QString& filepath)
     setWindowTitle(currentFileName() + "[*]");
 
     QTextStream in(&file);
+    in.setCodec(QTextCodec::codecForName("utf-8"));
     setPlainText(in.readAll());
     // disable '*' in window title at first load file content
     setWindowModified(false);
@@ -50,10 +58,13 @@ bool TextEditor::loadFile(const QString& filepath)
 
 bool TextEditor::save()
 {
+    // nothing to save as file is allready commit to disk
+    if(fileCommited()){
+        return true;
+    }
     if(!isUntitled){
         return saveFile(currentFilePath());
     }
-
     return saveAs();
 }
 
@@ -62,11 +73,19 @@ bool TextEditor::saveAs()
     auto filepath = QFileDialog::getSaveFileName(this, tr("另存为"), currentFilePath_);
     if(filepath.isEmpty())
         return false;
+
     return saveFile(filepath);
+}
+
+bool TextEditor::fileCommited()
+{
+    return isFileCommited_;
 }
 
 bool TextEditor::saveFile(const QString& filepath)
 {
+    isUntitled = false;
+
     QFile file(filepath);
     if(! file.open(QFile::WriteOnly | QFile::Text)){
         QMessageBox::warning(this, tr("多文档编辑器"),
@@ -75,10 +94,49 @@ bool TextEditor::saveFile(const QString& filepath)
         return false;
     }
     QTextStream out(&file);
+    out.setCodec(QTextCodec::codecForName("utf-8"));
     // write in plain text
     out << toPlainText();
-    currentFilePath_ = filepath;
+
+    setCurrentFile(filepath);
+    setWindowTitle(currentFileName());
+    setWindowModified(false);
+    setfileCommited();
     return true;
+}
+
+void TextEditor::closeEvent(QCloseEvent *event)
+{
+    if(fileCommited()){
+        event->accept();
+        return ;
+    }
+    QMessageBox msgBox;
+    msgBox.setText("你想将更改保存到");
+    msgBox.setInformativeText(currentFilePath());
+    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Save);
+    msgBox.setButtonText(QMessageBox::Save, tr("保存(&S)"));
+    msgBox.setButtonText(QMessageBox::Discard, tr("丢弃(&N)"));
+    msgBox.setButtonText(QMessageBox::Cancel, tr("取消"));
+
+    auto choice = msgBox.exec();
+    switch (choice){
+        case QMessageBox::Save:
+            if(save()){
+                event->accept();
+            }
+            break;
+        case QMessageBox::Discard:
+            event->accept();
+            break;
+        case QMessageBox::Cancel:
+            event->ignore();
+            break;
+        default:
+            event->ignore();
+            break;
+    }
 }
 
 void TextEditor::setCurrentFile(const QString &absFilePath)
@@ -101,4 +159,14 @@ void TextEditor::documentWasModified()
     // will automaticly display when
     // setWinowModified(true) is called
     setWindowModified(document()->isModified());
+}
+
+void TextEditor::setfileCommited()
+{
+    isFileCommited_ = true;
+}
+
+void TextEditor::setfileUnCommited()
+{
+    isFileCommited_ = false;
 }

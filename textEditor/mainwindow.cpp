@@ -5,6 +5,7 @@
 #include "QtDebug"
 #include "QFile"
 #include "QFileDialog"
+#include "QCloseEvent"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -109,6 +110,11 @@ QMdiSubWindow *MainWindow::findActiveEditorByFilePath(const QString &filepath)
     return nullptr;
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    event->accept();
+}
+
 
 void MainWindow::on_actionOpen_triggered()
 {
@@ -128,8 +134,38 @@ void MainWindow::on_actionOpen_triggered()
     TextEditor* child = createTextEditor();
     ui_->mdiArea->addSubWindow(child);
     child->setCurrentFile(filepath);
+    // TODO: set cursor to loading
     child->loadFile(filepath);
     child->show();
 
     return ;
+}
+
+void MainWindow::on_actionSave_triggered(){
+    TextEditor * activeEditor = activeTextEditor();
+    assert(activeEditor != nullptr);
+
+    activeEditor->save();
+    activeEditor->setWindowModified(false);
+}
+
+void MainWindow::on_actionSaveAs_triggered()
+{
+    TextEditor * activeEditor = activeTextEditor();
+    assert(activeEditor != nullptr);
+
+    activeEditor->saveAs();
+    activeEditor->setWindowModified(false);
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    auto childList = ui_->mdiArea->subWindowList();
+    for(auto mdiChild : childList){
+        TextEditor* activeEditor =
+                    qobject_cast<TextEditor*>(mdiChild->widget());
+        activeEditor->save();
+        activeEditor->close();
+    }
+    close();
 }

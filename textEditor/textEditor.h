@@ -16,21 +16,26 @@ public:
     bool loadFile(const QString& filepath);
     bool save();
     bool saveAs();
-    bool saveFile(const QString& filepath);
 
+    bool fileCommited();
     void setCurrentFile(const QString& absFilePath);
     QString currentFilePath() { return currentFilePath_;}
     QString currentFileName();
 
-protected:
-    void onClose(QCloseEvent* event);
+private:
+    bool saveFile(const QString& filepath);
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void documentWasModified();
+    void setfileCommited();
+    void setfileUnCommited();
 
 private:
     QString currentFilePath_;
     bool isUntitled;
+    // file is commited to disk(saved)
+    bool isFileCommited_;
 };
 
 #endif // TextEditor_H
