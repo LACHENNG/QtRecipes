@@ -6,6 +6,7 @@
 #include "QFile"
 #include "QFileDialog"
 #include "QCloseEvent"
+#include "aboutmewindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -161,8 +162,8 @@ void MainWindow::on_actionSaveAs_triggered()
     TextEditor * activeEditor = activeTextEditor();
     assert(activeEditor != nullptr);
 
-    activeEditor->saveAs();
-    activeEditor->setWindowModified(false);
+    if(activeEditor->saveAs())
+        activeEditor->setWindowModified(false);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -225,7 +226,9 @@ void MainWindow::on_actionPrevious_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-
+    auto *aboutWind = new AboutMeWindow();
+    aboutWind->setWindowModality(Qt::WindowModality::ApplicationModal);
+    aboutWind->show();
 }
 
 void MainWindow::on_actionAboutQt_triggered()

@@ -16,15 +16,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    aboutmewindow.cpp \
     main.cpp \
     mainwindow.cpp \
     textEditor.cpp
 
 HEADERS += \
+    aboutmewindow.h \
     mainwindow.h \
     textEditor.h
 
 FORMS += \
+    aboutmewindow.ui \
     mainwindow.ui
 
 # Default rules for deployment.
