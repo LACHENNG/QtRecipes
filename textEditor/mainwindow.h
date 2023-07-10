@@ -12,6 +12,7 @@ class MainWindow;
 
 class TextEditor;
 class QMdiSubWindow;
+class QSignalMapper;
 
 class MainWindow : public QMainWindow
 {
@@ -26,7 +27,6 @@ private slots:
     void updateMenus();
     void on_actionSave_triggered();
     TextEditor *createTextEditor();
-
 
     void on_actionSaveAs_triggered();
 
@@ -53,15 +53,21 @@ private slots:
     void on_actionAbout_triggered();
 
     void on_actionAboutQt_triggered();
-
+    // update subwindow list of file names for opened
+    // text editors in window menu
+    void updateSubWindowListInMenu();
+    void setActiveMdiSubWindow(QWidget*);
 private:
     TextEditor* activeTextEditor() const;
     QMdiSubWindow *findActiveEditorByFilePath(const QString& filepath);
     void closeEvent(QCloseEvent *event) override;
 
+
+
 private:
     Ui::MainWindow *ui_;
     QAction *actionSeqarator_;
+    QSignalMapper *windowMapper_;
 //    TextEditor* activeTextEditor_;
 };
 

@@ -7,21 +7,29 @@
 #include "QFileDialog"
 #include "QCloseEvent"
 #include "aboutmewindow.h"
+#include "QSignalMapper"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui_(new Ui::MainWindow),
-    actionSeqarator_(new QAction(this))
+    actionSeqarator_(new QAction(this)),
+    windowMapper_(new QSignalMapper(this))
 {
     ui_->setupUi(this);
 //    ui_->mdiArea->setViewMode(QMdiArea::TabbedView);
-    actionSeqarator_->setSeparator(false);
+    actionSeqarator_->setSeparator(true);
 
     updateMenus();
 
     // update  menu when there is activated textEditors
     connect(ui_->mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),
             this, SLOT(updateMenus()));
+
+    // signal mapper
+    connect(windowMapper_, SIGNAL(mapped(QWidget*)),
+            this, SLOT(setActiveMdiSubWindow(QWidget*)));
+    connect(ui_->menuW, SIGNAL(aboutToShow()),
+            this, SLOT(updateSubWindowListInMenu()));
 }
 
 MainWindow::~MainWindow()
@@ -118,6 +126,57 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if(midchildAllClosed)
         event->accept();
     else event->ignore();
+}
+
+void MainWindow::setActiveMdiSubWindow(QWidget *targetWind)
+{
+    qDebug() << "setActiveTexxEditor";
+    auto mdiChild = qobject_cast<QMdiSubWindow*>(targetWind);
+    ui_->mdiArea->setActiveSubWindow(mdiChild);
+}
+
+void MainWindow::updateSubWindowListInMenu()
+{
+    auto menuW = ui_->menuW;
+    menuW->clear();
+    menuW->addAction(ui_->actionClose);
+    menuW->addAction(ui_->actionCloseAll);
+    menuW->addSeparator();
+    menuW->addAction(ui_->actionTile);
+    menuW->addAction(ui_->actionCascade);
+    menuW->addSeparator();
+    menuW->addAction(ui_->actionPrevious);
+    menuW->addAction(ui_->actionNext);
+    menuW->addAction(actionSeqarator_);
+
+
+    const auto& midSubWindList = ui_->mdiArea->subWindowList();
+    bool hasOpenedEditors = (midSubWindList.size() != 0);
+    actionSeqarator_->setVisible(hasOpenedEditors);
+
+    int i = 1;
+    for(auto midSubWind : midSubWindList){
+        TextEditor* editorp = qobject_cast<TextEditor*>(midSubWind->widget());
+
+        auto name = editorp->currentFileName();
+        QAction* action = new QAction(menuW);
+        if(i <= 9){
+            action->setText(tr("&%1 %2").arg(i).arg(name));
+        }else{
+            action->setText(tr("%1 %2").arg(i).arg(name));
+        }
+
+        action->setCheckable(true);
+        action->setChecked(activeTextEditor() == editorp);
+        menuW->addAction(action);
+
+        // windowMapper reemit singals of sender to receiver
+        // with extra parameters
+        connect(action, SIGNAL(triggered()),
+                windowMapper_, SLOT(map()));
+        windowMapper_->setMapping(action, midSubWind);
+        i++;
+    }
 }
 
 

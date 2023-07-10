@@ -34,7 +34,6 @@ void TextEditor::newFile()
 bool TextEditor::loadFile(const QString& filepath)
 {
     isUntitled = false;
-    setfileCommited();
 
     QFile file(filepath);
 
@@ -52,7 +51,7 @@ bool TextEditor::loadFile(const QString& filepath)
     setPlainText(in.readAll());
     // disable '*' in window title at first load file content
     setWindowModified(false);
-
+    setfileCommited();
     return true;
 }
 
@@ -122,7 +121,7 @@ bool TextEditor::saveFile(const QString& filepath)
 
 void TextEditor::closeEvent(QCloseEvent *event)
 {
-    if(fileCommited()){
+    if(!document()->isModified() || fileCommited()){
         event->accept();
         return ;
     }
