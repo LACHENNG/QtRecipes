@@ -62,7 +62,8 @@ private:
     QMdiSubWindow *findActiveEditorByFilePath(const QString& filepath);
     void closeEvent(QCloseEvent *event) override;
 
-
+    void writeAppSettings();
+    void readAppSettings();
 
 private:
     Ui::MainWindow *ui_;

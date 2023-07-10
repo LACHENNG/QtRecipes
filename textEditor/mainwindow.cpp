@@ -8,6 +8,9 @@
 #include "QCloseEvent"
 #include "aboutmewindow.h"
 #include "QSignalMapper"
+#include "QSettings"
+#include "QGuiApplication"
+#include "QScreen"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(setActiveMdiSubWindow(QWidget*)));
     connect(ui_->menuW, SIGNAL(aboutToShow()),
             this, SLOT(updateSubWindowListInMenu()));
+
+    readAppSettings();
 }
 
 MainWindow::~MainWindow()
@@ -49,7 +54,6 @@ void MainWindow::on_actionNew_triggered()
 // Slot triggled by SIGNAL(subWindowActivated(QMdiSubWindow*))
 void MainWindow::updateMenus()
 {
-    qDebug() << "slot updateMenus called with winp = " << activeTextEditor();
     bool hasTextEditors = (activeTextEditor() != nullptr);
     ui_->actionSave->setEnabled(hasTextEditors);
     ui_->actionSaveAs->setEnabled(hasTextEditors);
@@ -123,14 +127,41 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     ui_->mdiArea->closeAllSubWindows();
     bool midchildAllClosed = (ui_->mdiArea->subWindowList().size() == 0);
-    if(midchildAllClosed)
+    if(midchildAllClosed){
+        writeAppSettings();
         event->accept();
+    }
     else event->ignore();
+}
+
+void MainWindow::writeAppSettings()
+{
+    QSettings settings("lanceFreeSoftware", "textEditor");
+    settings.setValue("window_pos", pos());
+    settings.setValue("window_size", size());
+}
+
+void MainWindow::readAppSettings()
+{
+    // default position and size
+    // centralize
+    QRect rect = QGuiApplication::primaryScreen()->geometry();
+    int desktop_width = rect.width();
+    int desktop_height = rect.height();
+    QSize defaultWindSize(desktop_width/2, desktop_height/2);
+    QPoint center(desktop_height, desktop_width);
+    QPoint offset(defaultWindSize.height() / 2, defaultWindSize.width() / 2);
+    QPoint defaultPos(center - offset);
+
+    QSettings settings("lanceFreeSoftware", "textEditor");
+    auto pos = settings.value("window_pos", defaultWindSize).toPoint();
+    auto size = settings.value("window_size", defaultPos).toSize();
+    move(pos);
+    resize(size);
 }
 
 void MainWindow::setActiveMdiSubWindow(QWidget *targetWind)
 {
-    qDebug() << "setActiveTexxEditor";
     auto mdiChild = qobject_cast<QMdiSubWindow*>(targetWind);
     ui_->mdiArea->setActiveSubWindow(mdiChild);
 }
@@ -227,8 +258,10 @@ void MainWindow::on_actionSaveAs_triggered()
 
 void MainWindow::on_actionExit_triggered()
 {
-    on_actionCloseAll_triggered();
-    close();
+//    on_actionCloseAll_triggered();
+//    close();
+    QApplication::closeAllWindows();
+    writeAppSettings();
 }
 
 void MainWindow::on_actionCut_triggered()
