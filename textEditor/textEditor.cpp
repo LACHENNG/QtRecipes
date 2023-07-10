@@ -6,6 +6,7 @@
 #include <QTextEncoder>
 #include <QCloseEvent>
 #include <QDebug>
+#include <QMenu>
 
 TextEditor::TextEditor(QWidget* parent)
   : QTextEdit(parent),
@@ -91,6 +92,12 @@ void TextEditor::pasteFromClipBoard()
     paste();
 }
 
+void TextEditor::clearContent()
+{
+    clear();
+    setfileUnCommited();
+}
+
 bool TextEditor::fileCommited()
 {
     return isFileCommited_;
@@ -151,6 +158,28 @@ void TextEditor::closeEvent(QCloseEvent *event)
             event->ignore();
             break;
     }
+}
+
+void TextEditor::contextMenuEvent(QContextMenuEvent *e)
+{
+    QScopedPointer<QMenu> menu(new QMenu());
+
+    auto aundo = menu->addAction(tr("撤销(&R)"), this, SLOT(undo()), QKeySequence::Undo);
+    auto aredo = menu->addAction(tr("恢复(&R)"), this, SLOT(redo()), QKeySequence::Redo);
+    aundo->setEnabled(document()->isUndoAvailable());
+    aredo->setEnabled(document()->isRedoAvailable());
+    menu->addSeparator();
+
+    auto acut = menu->addAction(tr("剪切(&T)"), this, SLOT(cutToClipBoard()), QKeySequence::Cut);
+    auto acopy = menu->addAction(tr("复制(&T)"), this, SLOT(copySelectedToClipBoard()), QKeySequence::Cut);
+    auto apaste = menu->addAction(tr("粘贴(&T)"), this, SLOT(pasteFromClipBoard()), QKeySequence::Cut);
+    auto aclear = menu->addAction(tr("清空(&P)"), this, SLOT(clearContent()));
+    acut->setEnabled(textCursor().hasSelection());
+    acopy->setEnabled(textCursor().hasSelection());
+    apaste->setEnabled(true);
+    aclear->setEnabled(true);
+
+    menu->exec(e->globalPos());
 }
 
 void TextEditor::setCurrentFile(const QString &absFilePath)

@@ -16,11 +16,12 @@ public:
     bool loadFile(const QString& filepath);
     bool save();
     bool saveAs();
-
+public slots:
     void cutToClipBoard();
     void copySelectedToClipBoard();
     void pasteFromClipBoard();
-
+    void clearContent();
+public:
     bool fileCommited();
     void setCurrentFile(const QString& absFilePath);
     QString currentFilePath() { return currentFilePath_;}
@@ -29,6 +30,7 @@ public:
 private:
     bool saveFile(const QString& filepath);
     void closeEvent(QCloseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *e) override;
 
 private slots:
     void documentWasModified();
