@@ -98,6 +98,8 @@ TextEditor *MainWindow::createTextEditor()
             ui_->actionRedo, SLOT(setEnabled(bool)));
     connect(child->document(), SIGNAL(undoAvailable(bool)),
             ui_->actionUndo, SLOT(setEnabled(bool)));
+    connect(child, SIGNAL(cursorPositionChanged()),
+            this, SLOT(showCurLinePosInStatusBar()));
 
     return child;
 }
@@ -164,6 +166,17 @@ void MainWindow::setActiveMdiSubWindow(QWidget *targetWind)
 {
     auto mdiChild = qobject_cast<QMdiSubWindow*>(targetWind);
     ui_->mdiArea->setActiveSubWindow(mdiChild);
+}
+
+void MainWindow::showCurLinePosInStatusBar()
+{
+    if(activeTextEditor() == nullptr){
+        return ;
+    }
+    int rowNum = activeTextEditor()->textCursor().blockNumber() + 1;
+    int colNum = activeTextEditor()->textCursor().columnNumber() + 1;
+    ui_->statusbar->showMessage(tr("%1 行 %2 列")
+                                .arg(rowNum).arg(colNum), 2000);
 }
 
 void MainWindow::updateSubWindowListInMenu()

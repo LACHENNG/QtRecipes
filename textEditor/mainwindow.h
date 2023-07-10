@@ -57,6 +57,7 @@ private slots:
     // text editors in window menu
     void updateSubWindowListInMenu();
     void setActiveMdiSubWindow(QWidget*);
+    void showCurLinePosInStatusBar();
 private:
     TextEditor* activeTextEditor() const;
     QMdiSubWindow *findActiveEditorByFilePath(const QString& filepath);
