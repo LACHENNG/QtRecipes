@@ -13,5 +13,6 @@
         <file>images/save.png</file>
         <file>images/saveAs.png</file>
         <file>images/undo.png</file>
+        <file>images/icon.png</file>
     </qresource>
 </RCC>

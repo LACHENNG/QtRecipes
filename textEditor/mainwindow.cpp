@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(updateSubWindowListInMenu()));
 
     readAppSettings();
+    setWindowIcon(QIcon(":/myImages/images/icon.png"));
 }
 
 MainWindow::~MainWindow()
